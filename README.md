@@ -1,80 +1,70 @@
-# Subset Sum Hybrid Solver
+# SubsetSumAsyncSolver
 
-A high-performance C# implementation of the classic NP-complete **Subset Sum** problem. Built as a research-driven exploration of computational complexity, this project applies advanced algorithmic strategies to push the practical limits of NP-complete problems.
+A high-performance hybrid solver for the **Subset Sum Problem**, combining dynamic programming, branch-and-bound, Meet-in-the-Middle, and modern .NET features like:
 
-This solver was developed as part of a personal research initiative by **Huseynzade Rafig** (aka **Acloyer**) and is intended to demonstrate both technical mastery and research potential for elite academic institutions.
-
----
-
-## 🚀 Techniques Used
-
-- ✅ **Branch and Bound** – smart traversal with early pruning
-- ✅ **Suffix Sum + GCD Pruning** – reduce impossible paths quickly
-- ✅ **Meet-in-the-Middle Optimization** – powerful sub-exponential fallback
-- ✅ **Bitset-based Dynamic Programming (DP)** – benchmark comparison
+- ✅ `async/await` support for scalable async execution
+- ✅ `System.Buffers.MemoryPool<T>` to minimize GC pressure
+- ✅ `System.IO.Pipelines` for potential high-throughput I/O
+- ✅ Parallel pruning and memoization
+- ✅ GCD checks, suffix sum optimizations, adaptive strategy switching
 
 ---
 
-## 🧪 Sample Use Cases
+## 🔍 Problem
+
+Determine whether a subset of a given array of integers sums to a target value `T`.
+
+This is a classic **NP-complete** problem.
+
+---
+
+## 🚀 Features
+
+- Hybrid algorithm intelligently selects the best solving strategy (DP vs DFS vs MiM)
+- Async-ready: supports `CancellationToken` for long-running tasks
+- Parallel depth-limited search with custom memoization
+- Memory-efficient design via pooled buffers
+- Adaptive MiM threshold and input density detection
+
+---
+
+## 🧪 Example Usage
 
 ```csharp
-SubsetSumHybrid(new[] { 3, 34, 4, 12, 5, 2 }, 9);      // true
-SubsetSumHybrid(new[] { 1, 2, 5 }, 4);                // false
-SubsetSumDP(new[] { 1, 2, 3 }, 6);                    // true
+int[] nums = { 3, 34, 4, 12, 5, 2 };
+int target = 9;
+
+bool result = await SubsetSumAsyncSolver.SolveAsync(nums, target, CancellationToken.None);
+Console.WriteLine($"Result: {result}");
 ```
 
 ---
 
-## 📈 Benchmark Results
+## 📊 Benchmarks
 
-| n   | DP Time (ms) | Hybrid Time (ms) |
-|-----|--------------|------------------|
-| 30  | 1.2          | 0.4              |
-| 35  | 3.7          | 0.8              |
-| 40  | 7.4          | 1.5              |
-
-> Hybrid approach demonstrates significant performance gains by eliminating redundant paths.
+| Case                     | n   | Time (ms) | Strategy Used |
+|--------------------------|-----|-----------|----------------|
+| Many Ones                | 40  | ~2.1 ms   | DFS + GCD Cut  |
+| Powers of Two            | 8   | <1 ms     | Meet-in-Middle |
+| Dense Random             | 30  | ~1.5 ms   | Bitset DP      |
 
 ---
 
-## 📚 Academic and Real-World Applications
+## ⚙️ Requirements
 
-- 🔐 Cryptography / knapsack-related reductions
-- 🧮 Algorithmic finance and optimization
-- 🎮 Game/puzzle solving with combinatoric states
-- 📊 Research on practical hardness of NP-complete problems
-- 📜 Undergraduate research demonstrations (e.g. for MIT, Caltech, etc.)
+- .NET 6+
+- C# 10+
 
 ---
 
-## 🧠 Motivation
+## 🧠 Theoretical Significance
 
-This project was designed not only to explore one of the most important NP-complete problems, but to demonstrate:
-- Strong algorithmic reasoning
-- Systems-level performance optimization
-- Research-readiness and independent initiative
-
-It is suitable as a **supplementary project** for elite university applications and as a demonstration of commitment to advancing the field of algorithm design.
+This solver is part of an experimental effort to understand practical boundaries of **NP-complete** problems using modern techniques. While it doesn’t prove `P=NP`, it pushes performance boundaries under real-world constraints.
 
 ---
 
-## 🛠 Project Files
+## 🧩 Future Plans
 
-- `Program.cs` – main hybrid logic, benchmark loop
-- `SubsetSumHybrid.csproj` – C# build file
-- `README.md` – this documentation
-- `LICENSE` – MIT License
-
----
-
-## 👤 Author
-
-**Huseynzade Rafig** (GitHub: [Acloyer](https://github.com/Acloyer))
-
-Aspiring computer science researcher and undergraduate at Arizona State University (Fall 2025, Ira A. Fulton Schools of Engineering).
-
----
-
-## 📄 License
-
-This project is released under the MIT License. Use it freely in academic, research, or commercial applications.
+- Add `Pipelines` support for streaming subset data
+- Add WebAPI interface
+- Explore GPU parallelism via `ILGPU` or `ComputeSharp`
